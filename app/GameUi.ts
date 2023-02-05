@@ -92,7 +92,6 @@ export async function createGameUi(onGameStart: onGamestartCallback, onGameEnd: 
         game.playfield.resize(configuration.width, configuration.height);      
     });
 
-
     game.playfield.camera.setTargetContainer(container);
 
     const startGameFunction = (playerName: string) => {

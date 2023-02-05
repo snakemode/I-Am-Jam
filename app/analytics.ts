@@ -1,4 +1,5 @@
 export {};
+
 const gaUa = import.meta.env.VITE_GA_UA || "";
 
 if (gaUa && gaUa !== "") {

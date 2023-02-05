@@ -1,5 +1,6 @@
 export class Scoreboard {
 
+    private dedupe: boolean;
     private items: { name: string; score: number; }[];
     private cap: number;
   
@@ -7,9 +8,10 @@ export class Scoreboard {
       return this.items;
     }
   
-    constructor(items: { name: string; score: number; }[] = null, cap: number = 10) {
+    constructor(items: { name: string; score: number; }[] = null, dedupe: boolean = true, cap: number = 10) {
       this.items = [];
       this.cap = cap;
+      this.dedupe = dedupe;
       this.addRange(items || []);
     }
   
@@ -17,9 +19,9 @@ export class Scoreboard {
 
       for (let score of items) {
 
-        if (this.items.filter(x => x.name.trim() === score.name.trim()).length > 0) {
+        if (this.dedupe && this.items.filter(x => x.name.trim() === score.name.trim()).length > 0) {
 
-          var currentHighScore = this.items.filter(x => x.name === score.name)[0];
+          var currentHighScore = this.items.filter(x => x.name === score.name)[0];          
           this.items = this.items.filter(x => x.name !== score.name);
 
           var bestScore = Math.min(currentHighScore.score, score.score);
