@@ -1,6 +1,7 @@
 import Ably from "ably/promises";
 import { Types } from "ably";
 import { Game } from "../Game";
+import { ISpectatorConnector } from "./ISpectatorConnector";
 
 export interface StateMessage {
     id: string;
@@ -11,7 +12,7 @@ export interface StateMessage {
     isAlive: boolean;    
 }
 
-export class AblySpectatorConnector {
+export class AblySpectatorConnector implements ISpectatorConnector {
     private channel: Types.RealtimeChannelPromise;
     private lastState: string;
 
@@ -45,3 +46,5 @@ export class AblySpectatorConnector {
         });
     }
 }
+
+

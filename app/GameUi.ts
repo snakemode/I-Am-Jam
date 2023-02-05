@@ -6,6 +6,12 @@ import {GameConfiguration} from "./game/GameConfiguration";
 import { AblyHighScoreRepository } from "./game/highscores/AblyHighScoreRepository";
 import { Scoreboard } from "./game/highscores/Scoreboard";
 import { AblySpectatorConnector } from "./game/spectating/AblySpectatorConnector";
+import { LocalStorageGhostRepository } from "./game/ghosts/LocalStorageGhostRepository";
+import { NullHighScoreRepository } from "./game/highscores/NullHighScoreRepository";
+import { IHighScoreRepository } from "./game/highscores/IHighScoreRepository";
+import { IGhostRepository } from "./game/ghosts/IGhostRepository";
+import { ISpectatorConnector } from "./game/spectating/ISpectatorConnector";
+import { NullSpectatorConnector } from "./game/spectating/NullSpectatorConnector";
 
 type onGamestartCallback = () => void;
 type onGameEndCallback = (scoreboard: Scoreboard, reason: string) => void;
@@ -26,12 +32,24 @@ const configuration: GameConfiguration = {
 
 export async function createGameUi(onGameStart: onGamestartCallback, onGameEnd: onGameEndCallback) {
     const game = new Game(configuration);
+    const useAbly = false;
 
-    const ably = new Ably.Realtime({ authUrl: "/api/ably-token-request" });
+    let scoresRepo: IHighScoreRepository = null;
+    let ghostRepo: IGhostRepository = null;
+    let spectatorConnector: ISpectatorConnector = null;
 
-    const spectatorConnector = new AblySpectatorConnector(ably);
-    const scoresRepo = new AblyHighScoreRepository(ably);
-    const ghostRepo = new AblyGhostRepository(ably).onGhostAdded((ghost: SaveFile) => {
+    if (useAbly) {
+        const ably = new Ably.Realtime({ authUrl: "/api/ably-token-request" });
+        ghostRepo = new AblyGhostRepository(ably);
+        scoresRepo = new AblyHighScoreRepository(ably);
+        spectatorConnector = new AblySpectatorConnector(ably);
+    } else {
+        ghostRepo = new LocalStorageGhostRepository();
+        scoresRepo = new NullHighScoreRepository();
+        spectatorConnector = new NullSpectatorConnector();
+    }
+
+    ghostRepo.onGhostAdded((ghost: SaveFile) => {
         game.addGhost(ghost);
     });
 

@@ -23,5 +23,10 @@ export class LocalStorageGhostRepository implements IGhostRepository {
     public onGhostAdded(callback: (ghost: SaveFile) => void) {
         this.callback = callback;
         this.getGhosts().then(x => x.forEach(callback));
+        return this;
+    }  
+    
+    public async bufferGhosts() {
+        return this;
     }
 }

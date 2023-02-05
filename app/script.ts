@@ -4,7 +4,7 @@ import { Scoreboard } from "./game/highscores/Scoreboard";
 import { Game } from "./game/Game";
 
 let game: Game = null;
-const requireSignup = true;
+const requireSignup = false;
 
 (async () => {
     const startGameFunction = await createGameUi(onGameStart, onGameEnd);
